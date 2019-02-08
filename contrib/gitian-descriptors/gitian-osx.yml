@@ -1,5 +1,5 @@
 ---
-name: "rapid-osx-0.12"
+name: "rapid-osx-1.0"
 enable_cache: true
 suites:
 - "trusty"
@@ -26,7 +26,7 @@ remotes:
 - "url": "https://github.com/foxrtb/rapidcore.git"
   "dir": "rapid"
 files:
-- "MacOSX10.9.sdk.tar.gz"
+- "MacOSX10.11.sdk.tar.gz"
 script: |
   WRAP_DIR=$HOME/wrapped
   HOSTS="x86_64-apple-darwin11"
@@ -71,11 +71,11 @@ script: |
   done
   export PATH=${WRAP_DIR}:${PATH}
 
-  cd rapid
+  cd rapidcore
   BASEPREFIX=`pwd`/depends
 
   mkdir -p ${BASEPREFIX}/SDKs
-  tar -C ${BASEPREFIX}/SDKs -xf ${BUILD_DIR}/MacOSX10.9.sdk.tar.gz
+  tar -C ${BASEPREFIX}/SDKs -xf ${BUILD_DIR}/MacOSX10.11.sdk.tar.gz
 
   # Build dependencies for each host
   for i in $HOSTS; do
