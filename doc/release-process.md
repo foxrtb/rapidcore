@@ -1,23 +1,23 @@
 Release Process
 ====================
 
-* Update translations, see [translation_process.md](https://github.com/rapidpay/rapid/blob/master/doc/translation_process.md#syncing-with-transifex)
+* Update translations, see [translation_process.md](https://github.com/anodos/anodos/blob/master/doc/translation_process.md#syncing-with-transifex)
 * Update hardcoded [seeds](/contrib/seeds)
 
 * * *
 
-### First time / New builders
+###First time / New builders
 Check out the source code in the following directory hierarchy.
 
 	cd /path/to/your/toplevel/build
-	git clone https://github.com/rapidpay/gitian.sigs.git
-	git clone https://github.com/rapidpay/rapid-detached-sigs.git
+	git clone https://github.com/anodos/gitian.sigs.git
+	git clone https://github.com/anodos/anodos-detached-sigs.git
 	git clone https://github.com/devrandom/gitian-builder.git
-	git clone https://github.com/rapidpay/rapid.git
+	git clone https://github.com/anodos/anodos.git
 
-### Rapid Core maintainers/release engineers, update (commit) version in sources
+###Anodos Core maintainers/release engineers, update (commit) version in sources
 
-	pushd ./rapid
+	pushd ./anodos
 	contrib/verifysfbinaries/verify.sh
 	configure.ac
 	doc/README*
@@ -36,11 +36,11 @@ Check out the source code in the following directory hierarchy.
 
 * * *
 
-### Setup and perform Gitian builds
+###Setup and perform Gitian builds
 
  Setup Gitian descriptors:
 
-	pushd ./rapid
+	pushd ./anodos
 	export SIGNER=(your Gitian key, ie bluematt, sipa, etc)
 	export VERSION=(new version, e.g. 0.8.0)
 	git fetch
@@ -58,7 +58,7 @@ Check out the source code in the following directory hierarchy.
 	pushd ./gitian-builder
 	git pull
 
-### Fetch and create inputs: (first time, or when dependency versions change)
+###Fetch and create inputs: (first time, or when dependency versions change)
 
 	mkdir -p inputs
 	wget -P inputs https://bitcoincore.org/cfields/osslsigncode-Backports-to-1.7.1.patch
@@ -72,60 +72,60 @@ Check out the source code in the following directory hierarchy.
 
 	tar -C /Volumes/Xcode/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/ -czf MacOSX10.9.sdk.tar.gz MacOSX10.9.sdk
 
-### Optional: Seed the Gitian sources cache and offline git repositories
+###Optional: Seed the Gitian sources cache and offline git repositories
 
 By default, Gitian will fetch source files as needed. To cache them ahead of time:
 
-	make -C ../rapid/depends download SOURCES_PATH=`pwd`/cache/common
+	make -C ../anodos/depends download SOURCES_PATH=`pwd`/cache/common
 
 Only missing files will be fetched, so this is safe to re-run for each build.
 
 NOTE: Offline builds must use the --url flag to ensure Gitian fetches only from local URLs. For example:
 ```
-./bin/gbuild --url rapid=/path/to/rapid,signature=/path/to/sigs {rest of arguments}
+./bin/gbuild --url anodos=/path/to/anodos,signature=/path/to/sigs {rest of arguments}
 ```
 The gbuild invocations below <b>DO NOT DO THIS</b> by default.
 
-### Build and sign Rapid Core for Linux, Windows, and OS X:
+###Build and sign Anodos Core for Linux, Windows, and OS X:
 
-	./bin/gbuild --commit rapid=v${VERSION} ../rapid/contrib/gitian-descriptors/gitian-linux.yml
-	./bin/gsign --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../rapid/contrib/gitian-descriptors/gitian-linux.yml
-	mv build/out/rapid-*.tar.gz build/out/src/rapid-*.tar.gz ../
+	./bin/gbuild --commit anodos=v${VERSION} ../anodos/contrib/gitian-descriptors/gitian-linux.yml
+	./bin/gsign --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../anodos/contrib/gitian-descriptors/gitian-linux.yml
+	mv build/out/anodos-*.tar.gz build/out/src/anodos-*.tar.gz ../
 
-	./bin/gbuild --commit rapid=v${VERSION} ../rapid/contrib/gitian-descriptors/gitian-win.yml
-	./bin/gsign --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../rapid/contrib/gitian-descriptors/gitian-win.yml
-	mv build/out/rapid-*-win-unsigned.tar.gz inputs/rapid-win-unsigned.tar.gz
-	mv build/out/rapid-*.zip build/out/rapid-*.exe ../
+	./bin/gbuild --commit anodos=v${VERSION} ../anodos/contrib/gitian-descriptors/gitian-win.yml
+	./bin/gsign --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../anodos/contrib/gitian-descriptors/gitian-win.yml
+	mv build/out/anodos-*-win-unsigned.tar.gz inputs/anodos-win-unsigned.tar.gz
+	mv build/out/anodos-*.zip build/out/anodos-*.exe ../
 
-	./bin/gbuild --commit rapid=v${VERSION} ../rapid/contrib/gitian-descriptors/gitian-osx.yml
-	./bin/gsign --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../rapid/contrib/gitian-descriptors/gitian-osx.yml
-	mv build/out/rapid-*-osx-unsigned.tar.gz inputs/rapid-osx-unsigned.tar.gz
-	mv build/out/rapid-*.tar.gz build/out/rapid-*.dmg ../
+	./bin/gbuild --commit anodos=v${VERSION} ../anodos/contrib/gitian-descriptors/gitian-osx.yml
+	./bin/gsign --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../anodos/contrib/gitian-descriptors/gitian-osx.yml
+	mv build/out/anodos-*-osx-unsigned.tar.gz inputs/anodos-osx-unsigned.tar.gz
+	mv build/out/anodos-*.tar.gz build/out/anodos-*.dmg ../
 	popd
 
   Build output expected:
 
-  1. source tarball (rapid-${VERSION}.tar.gz)
-  2. linux 32-bit and 64-bit dist tarballs (rapid-${VERSION}-linux[32|64].tar.gz)
-  3. windows 32-bit and 64-bit unsigned installers and dist zips (rapid-${VERSION}-win[32|64]-setup-unsigned.exe, rapid-${VERSION}-win[32|64].zip)
-  4. OS X unsigned installer and dist tarball (rapid-${VERSION}-osx-unsigned.dmg, rapid-${VERSION}-osx64.tar.gz)
+  1. source tarball (anodos-${VERSION}.tar.gz)
+  2. linux 32-bit and 64-bit dist tarballs (anodos-${VERSION}-linux[32|64].tar.gz)
+  3. windows 32-bit and 64-bit unsigned installers and dist zips (anodos-${VERSION}-win[32|64]-setup-unsigned.exe, anodos-${VERSION}-win[32|64].zip)
+  4. OS X unsigned installer and dist tarball (anodos-${VERSION}-osx-unsigned.dmg, anodos-${VERSION}-osx64.tar.gz)
   5. Gitian signatures (in gitian.sigs/${VERSION}-<linux|{win,osx}-unsigned>/(your Gitian key)/
 
-### Verify other gitian builders signatures to your own. (Optional)
+###Verify other gitian builders signatures to your own. (Optional)
 
   Add other gitian builders keys to your gpg keyring
 
-	gpg --import ../rapid/contrib/gitian-downloader/*.pgp
+	gpg --import ../anodos/contrib/gitian-downloader/*.pgp
 
   Verify the signatures
 
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../rapid/contrib/gitian-descriptors/gitian-linux.yml
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../rapid/contrib/gitian-descriptors/gitian-win.yml
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../rapid/contrib/gitian-descriptors/gitian-osx.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../anodos/contrib/gitian-descriptors/gitian-linux.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../anodos/contrib/gitian-descriptors/gitian-win.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../anodos/contrib/gitian-descriptors/gitian-osx.yml
 
 	popd
 
-### Next steps:
+###Next steps:
 
 Commit your signature to gitian.sigs:
 
@@ -139,25 +139,25 @@ Commit your signature to gitian.sigs:
 
   Wait for Windows/OS X detached signatures:
 	Once the Windows/OS X builds each have 3 matching signatures, they will be signed with their respective release keys.
-	Detached signatures will then be committed to the [rapid-detached-sigs](https://github.com/rapidpay/rapid-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
+	Detached signatures will then be committed to the [anodos-detached-sigs](https://github.com/anodos/anodos-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
 
   Create (and optionally verify) the signed OS X binary:
 
 	pushd ./gitian-builder
-	./bin/gbuild -i --commit signature=v${VERSION} ../rapid/contrib/gitian-descriptors/gitian-osx-signer.yml
-	./bin/gsign --signer $SIGNER --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../rapid/contrib/gitian-descriptors/gitian-osx-signer.yml
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../rapid/contrib/gitian-descriptors/gitian-osx-signer.yml
-	mv build/out/rapid-osx-signed.dmg ../rapid-${VERSION}-osx.dmg
+	./bin/gbuild -i --commit signature=v${VERSION} ../anodos/contrib/gitian-descriptors/gitian-osx-signer.yml
+	./bin/gsign --signer $SIGNER --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../anodos/contrib/gitian-descriptors/gitian-osx-signer.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../anodos/contrib/gitian-descriptors/gitian-osx-signer.yml
+	mv build/out/anodos-osx-signed.dmg ../anodos-${VERSION}-osx.dmg
 	popd
 
   Create (and optionally verify) the signed Windows binaries:
 
 	pushd ./gitian-builder
-	./bin/gbuild -i --commit signature=v${VERSION} ../rapid/contrib/gitian-descriptors/gitian-win-signer.yml
-	./bin/gsign --signer $SIGNER --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../rapid/contrib/gitian-descriptors/gitian-win-signer.yml
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-signed ../rapid/contrib/gitian-descriptors/gitian-win-signer.yml
-	mv build/out/rapid-*win64-setup.exe ../rapid-${VERSION}-win64-setup.exe
-	mv build/out/rapid-*win32-setup.exe ../rapid-${VERSION}-win32-setup.exe
+	./bin/gbuild -i --commit signature=v${VERSION} ../anodos/contrib/gitian-descriptors/gitian-win-signer.yml
+	./bin/gsign --signer $SIGNER --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../anodos/contrib/gitian-descriptors/gitian-win-signer.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-signed ../anodos/contrib/gitian-descriptors/gitian-win-signer.yml
+	mv build/out/anodos-*win64-setup.exe ../anodos-${VERSION}-win64-setup.exe
+	mv build/out/anodos-*win32-setup.exe ../anodos-${VERSION}-win32-setup.exe
 	popd
 
 Commit your signature for the signed OS X/Windows binaries:
@@ -182,21 +182,18 @@ rm SHA256SUMS
 (the digest algorithm is forced to sha256 to avoid confusion of the `Hash:` header that GPG adds with the SHA256 used for the files)
 Note: check that SHA256SUMS itself doesn't end up in SHA256SUMS, which is a spurious/nonsensical entry.
 
-- Upload zips and installers, as well as `SHA256SUMS.asc` from last step, to the rapid.org server
+- Upload zips and installers, as well as `SHA256SUMS.asc` from last step, to the anodos.info server
 
-- Update rapid.org
+- Update anodos.info
 
 - Announce the release:
+  - Anodos-development mailing list
 
-  - Release on Rapid forum: https://www.rapid.org/forum/topic/official-announcements.54/
+  - Update title of #anodos on Freenode IRC
 
-  - Rapid-development mailing list
+  - Optionally reddit /r/Anodospay, ... but this will usually sort out itself
 
-  - Update title of #rapidpay on Freenode IRC
-
-  - Optionally reddit /r/Rapidpay, ... but this will usually sort out itself
-
-- Notify flare so that he can start building [the PPAs](https://launchpad.net/~rapid.org/+archive/ubuntu/rapid)
+- Notify flare so that he can start building [the PPAs](https://launchpad.net/~anodos.info/+archive/ubuntu/anodos)
 
 - Add release notes for the new version to the directory `doc/release-notes` in git master
 
