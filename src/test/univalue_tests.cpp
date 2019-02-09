@@ -7,7 +7,7 @@
 #include <string>
 #include <map>
 #include <univalue.h>
-#include "test/test_anodos.h"
+#include "test/test_rapid.h"
 
 #include <boost/test/unit_test.hpp>
 

@@ -1,7 +1,7 @@
 Description
 ------------
 
-This directory contains data-driven tests for various aspects of Anodos.
+This directory contains data-driven tests for various aspects of Rapid.
 
 License
 --------
